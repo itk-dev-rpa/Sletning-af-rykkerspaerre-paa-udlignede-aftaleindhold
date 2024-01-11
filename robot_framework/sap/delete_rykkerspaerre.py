@@ -73,6 +73,7 @@ def open_fp(session, fp: str, aftale: str):
 
     # Set aftale filter
     session.findById("wnd[0]/usr/btnZDKD_BP_FILTER").press()
+    session.findById("wnd[1]/usr/tabsG_SELONETABSTRIP/tabpTAB001").select()
     session.findById("wnd[1]/usr/tabsG_SELONETABSTRIP/tabpTAB001/ssubSUBSCR_PRESEL:SAPLSDH4:0220/sub:SAPLSDH4:0220/ctxtG_SELFLD_TAB-LOW[7,24]").text = aftale
     session.findById("wnd[1]/tbar[0]/btn[0]").press()
 
