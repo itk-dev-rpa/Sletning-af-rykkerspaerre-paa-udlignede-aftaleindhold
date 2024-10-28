@@ -1,6 +1,6 @@
 """This module handles the deletion of rykkerspærrer."""
 
-from itk_dev_shared_components.sap import tree_util
+from itk_dev_shared_components.sap import tree_util, fmcacov
 from OpenOrchestrator.orchestrator_connection.connection import OrchestratorConnection
 from OpenOrchestrator.database.queues import QueueStatus
 
@@ -20,21 +20,14 @@ def delete_rykkerspaerre(session, orchestrator_connection: OrchestratorConnectio
     queue_element = orchestrator_connection.create_queue_element(config.QUEUE_NAME, f"{fp}:{aftale}")
     orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.IN_PROGRESS)
 
-    # Sometimes the search turns up blank
-    # Retry until it doesn't
-    for _ in range(3):
-        open_fp(session, fp, aftale)
-        aftale_tree = session.findById("wnd[0]/shellcont/shell")
-        try:
-            # Check if the aftale is in the aftale tree
-            node_key = tree_util.get_node_key_by_text(aftale_tree, aftale)
-        except ValueError:
-            continue
-
-        break
-    else:
+    fmcacov.open_forretningspartner(session, fp)
+    aftale_tree = session.findById("wnd[0]/shellcont/shell")
+    try:
+        # Check if the aftale is in the aftale tree
+        node_key = tree_util.get_node_key_by_text(aftale_tree, aftale)
+    except ValueError:
         orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.FAILED, message="Aftalen kunne ikke findes.")
-        raise RuntimeError("Search didn't turn up any result after 3 tries.")
+        return
 
     # Check postliste
     if not check_postliste(session):
@@ -71,27 +64,6 @@ def delete_rykkerspaerre(session, orchestrator_connection: OrchestratorConnectio
     session.findById("wnd[0]/tbar[0]/btn[3]").press()
 
     orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.DONE)
-
-
-def open_fp(session, fp: str, aftale: str):
-    """Open the forretningspartner in fmcacov with a filter on the aftale.
-
-    Args:
-        session: The SAP session object.
-        fp: The forretningspartner to open.
-        aftale: The aftale to filter on.
-    """
-    session.findById("wnd[0]/usr/ctxtGPART_DYN").text = fp
-
-    # Set aftale filter
-    session.findById("wnd[0]/usr/btnZDKD_BP_FILTER").press()
-    session.findById("wnd[1]/usr/tabsG_SELONETABSTRIP/tabpTAB001").select()
-    session.findById("wnd[1]/usr/tabsG_SELONETABSTRIP/tabpTAB001/ssubSUBSCR_PRESEL:SAPLSDH4:0220/sub:SAPLSDH4:0220/ctxtG_SELFLD_TAB-LOW[7,24]").text = aftale
-    session.findById("wnd[1]/tbar[0]/btn[0]").press()
-
-    # Select aftale in popup
-    session.findById("wnd[1]/tbar[0]/btn[7]").press()
-    session.findById("wnd[1]/tbar[0]/btn[0]").press()
 
 
 def check_postliste(session) -> bool:
