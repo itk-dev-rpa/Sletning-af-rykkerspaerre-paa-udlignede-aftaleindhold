@@ -51,6 +51,12 @@ def delete_rykkerspaerre(session, orchestrator_connection: OrchestratorConnectio
         orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.DONE, message="Sprunget over: H 31.12.2999")
         return
 
+    if rs_type == 'I':
+        # Skip and go back
+        session.findById("wnd[0]/tbar[0]/btn[3]").press()
+        orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.DONE, message="Sprunget over: I")
+        return
+
     # Press 'Opret yderl. spærre'
     session.findById("wnd[0]/usr/subBDT_AREA:SAPLBUSS:0021/tabsBDT_TABSTRIP01/tabpBUSCR02_01/ssubGENSUB:SAPLBUSS:0029/ssubGENSUB:SAPLBUSS:7135/subA04P02:SAPLFMCA_PSOB_BDT2:0330/btnPUSH_DUNN_LOCK").press()
 
