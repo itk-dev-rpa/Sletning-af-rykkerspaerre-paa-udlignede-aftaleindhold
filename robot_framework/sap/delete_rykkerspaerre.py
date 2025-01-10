@@ -45,10 +45,16 @@ def delete_rykkerspaerre(session, orchestrator_connection: OrchestratorConnectio
     rs_type = session.findById("wnd[0]/usr/subBDT_AREA:SAPLBUSS:0021/tabsBDT_TABSTRIP01/tabpBUSCR02_01/ssubGENSUB:SAPLBUSS:0029/ssubGENSUB:SAPLBUSS:7135/subA04P02:SAPLFMCA_PSOB_BDT2:0330/ctxtSPSOB_SCR_2110_H3-DUNN_REASON").text
     rs_date = session.findById("wnd[0]/usr/subBDT_AREA:SAPLBUSS:0021/tabsBDT_TABSTRIP01/tabpBUSCR02_01/ssubGENSUB:SAPLBUSS:0029/ssubGENSUB:SAPLBUSS:7135/subA04P03:SAPLZDKD0001_CUSTOM_SCREENS:0510/ctxtGV_DUNN_TDATE_CO").text
 
-    if rs_type == 'H' and rs_date == '31.12.2999':
+    if (rs_type == 'H' and rs_date == '31.12.2999'):
         # Skip and go back
         session.findById("wnd[0]/tbar[0]/btn[3]").press()
         orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.DONE, message="Sprunget over: H 31.12.2999")
+        return
+
+    if rs_type == 'I':
+        # Skip and go back
+        session.findById("wnd[0]/tbar[0]/btn[3]").press()
+        orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.DONE, message="Sprunget over: I")
         return
 
     # Press 'Opret yderl. spærre'
