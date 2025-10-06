@@ -25,7 +25,7 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
 
     # Search all open cases
     fpo4_cases = fpo4.search_cases(session, fp_list, aftale_list)
-    itk_dev_event_log.emit(oc.process_name, "Found open cases", len(fpo4_cases))
+    itk_dev_event_log.emit(orchestrator_connection.process_name, "Found open cases", len(fpo4_cases))
 
     # Return to start screen
     session.findById("wnd[0]/tbar[0]/btn[12]").press()
