@@ -45,5 +45,5 @@ if __name__ == '__main__':
     import os
     conn_string = os.getenv("OpenOrchestratorConnString")
     crypto_key = os.getenv("OpenOrchestratorKey")
-    oc = OrchestratorConnection("Sletning Test", conn_string, crypto_key, "")
+    oc = OrchestratorConnection("Sletning Test", conn_string, crypto_key, "", "")
     process(oc)
