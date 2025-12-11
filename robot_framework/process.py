@@ -38,7 +38,7 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
     session.startTransaction("fmcacov")
     for case in work_list:
         delete_rykkerspaerre.delete_rykkerspaerre(session, orchestrator_connection, case[0], case[1])
-    itk_dev_event_log.emit(orchestrator_connection.process_name, "Deleted rykkerspærre", len(work_list))
+        itk_dev_event_log.emit(orchestrator_connection.process_name, "Deleted rykkerspærre")
 
 
 if __name__ == '__main__':
