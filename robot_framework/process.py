@@ -39,11 +39,3 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
     for case in work_list:
         delete_rykkerspaerre.delete_rykkerspaerre(session, orchestrator_connection, case[0], case[1])
         itk_dev_event_log.emit(orchestrator_connection.process_name, "Deleted rykkerspærre")
-
-
-if __name__ == '__main__':
-    import os
-    conn_string = os.getenv("OpenOrchestratorConnString")
-    crypto_key = os.getenv("OpenOrchestratorKey")
-    oc = OrchestratorConnection("Sletning Test", conn_string, crypto_key, "", "")
-    process(oc)
